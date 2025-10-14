@@ -105,6 +105,7 @@ const Home = () => {
         {!loading && !error && newsHeadlines.length > 0 && (
           <>
           <NewsCard newsHeadlines={newsHeadlines} />
+          <div className="load-more-btn d-flex justify-content-center">
           <button
             className="btn btn-primary"
             onClick={handleLoadMore}
@@ -112,6 +113,7 @@ const Home = () => {
           >
             Load More
           </button>
+          </div>
           </>
         )}
           

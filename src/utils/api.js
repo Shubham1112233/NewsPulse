@@ -10,7 +10,7 @@ const fetchHeadlines = async (countrycode, nextPage = null) => {
     const params = {
       apiKey: API_KEY,
       country: countrycode,
-      size: 10,
+      size: 9,
       ...(nextPage && { page: nextPage }),
     };
 
@@ -35,7 +35,7 @@ const fetchCategory = async (category) => {
       params: {
         apiKey: API_KEY,
         category: category,
-        size: 10,
+        size: 9,
       },
     });
 
@@ -52,7 +52,7 @@ const fetchSearch = async (searchQuery) => {
       params: {
         apiKey: API_KEY,
         q: searchQuery,
-        size: 10,
+        size: 9,
       },
     });
 

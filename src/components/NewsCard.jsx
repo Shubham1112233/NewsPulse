@@ -1,24 +1,37 @@
 import React, { useContext } from "react";
 import "./NewsCard.css";
 import { BookmarkContext } from "../contexts/BookmarkContext";
+import HeartIcon from "./HeartIcon";
+import articleimage from "../assets/Breaking_news.jpg"
 
 const NewsCard = ({ newsHeadlines }) => {
   const {bookmarks, addBookmark, removeBookmark} = useContext(BookmarkContext);
-
 
   if (!newsHeadlines || newsHeadlines.length === 0) {
     return null;
   }
 
-  
-  const handleBookmark = (article) => {
-    if (bookmarks.some(bookmark => bookmark.url === article.url)) {
-      console.log("Removing bookmark", article);
+  const handleBookmark = (e, article) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const articleUrl = article.link || article.url;
+    const isBookmarked = bookmarks.some(bookmark => 
+      (bookmark.link || bookmark.url) === articleUrl
+    );
+    
+    if (isBookmarked) {
       removeBookmark(article);
     } else {
-      console.log("Adding bookmark", article);
       addBookmark(article);
     }
+  }
+  
+  const isArticleBookmarked = (article) => {
+    const articleUrl = article.link || article.url;
+    return bookmarks.some(bookmark => 
+      (bookmark.link || bookmark.url) === articleUrl
+    );
   }
 
   return (
@@ -27,6 +40,7 @@ const NewsCard = ({ newsHeadlines }) => {
         const imageUrl =
           article.image_url ||
           article.urlToImage ||
+          articleimage ||
           "https://via.placeholder.com/400x250?text=No+Image";
         const title = article.title || "Untitled Article";
         const description =
@@ -50,32 +64,34 @@ const NewsCard = ({ newsHeadlines }) => {
             </div>
 
             <div className="news-card-content">
-              <h3 className="news-card-title">{title}</h3>
+              <div className="news-card-header">
+                <h3 className="news-card-title">{title}</h3>
+                <HeartIcon 
+                  filled={isArticleBookmarked(article)}
+                  onClick={(e) => handleBookmark(e, article)}
+                  className="news-card-bookmark"
+                />
+              </div>
               <p className="news-card-description">{description}</p>
 
               <div className="news-card-footer">
                 {publishedDate && (
                   <span className="news-card-date">
-                    {new Date(publishedDate).toLocaleDateString("en-US", {
+                    📅 {new Date(publishedDate).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
                     })}
                   </span>
                 )}
-                <div className="d-flex align-items-center gap-2">
-                  <button className="btn btn-primary" onClick={()=> handleBookmark(article)}>
-                    <i className="bi bi-bookmark"></i>
-                  </button>
-                  <a
-                    href={article.link || article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="news-card-link"
-                  >
-                    Read Article →
-                  </a>
-                </div>
+                <a
+                  href={article.link || article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="news-card-link"
+                >
+                  Read More →
+                </a>
               </div>
             </div>
           </article>

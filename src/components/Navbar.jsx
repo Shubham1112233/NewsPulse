@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { CountryContext } from "../contexts/CountryContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import useWindowResize from "../hooks/useWindowResize";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -10,7 +11,9 @@ const Navbar = () => {
   const { theme, handleThemeChange } = useContext(ThemeContext);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const navigate = useNavigate();
+  const { width } = useWindowResize();
 
   const handleSearchQueryChange = (e) => {
     setSearchQuery(e.target.value);
@@ -26,6 +29,9 @@ const Navbar = () => {
 
   const handleBookmarks = () => {
     navigate("/bookmarks");
+    if (width < 992) {
+      setIsNavCollapsed(true);
+    }
   };
 
   const countries = [
@@ -37,6 +43,32 @@ const Navbar = () => {
     { code: "DE", name: "Germany" },
   ];
 
+  // Auto-collapse navbar on resize to desktop
+  useEffect(() => {
+    if (width >= 992) {
+      setIsNavCollapsed(false);
+    } else {
+      setIsNavCollapsed(true);
+    }
+  }, [width]);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (width < 992 && !isNavCollapsed) {
+        const navbar = document.getElementById('navbarSupportedContent');
+        const toggler = document.querySelector('.navbar-toggler');
+        
+        if (navbar && !navbar.contains(event.target) && !toggler.contains(event.target)) {
+          setIsNavCollapsed(true);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [width, isNavCollapsed]);
+
   return (
     <nav className="navbar navbar-expand-lg main-navbar">
       <div className="container-fluid">
@@ -46,15 +78,17 @@ const Navbar = () => {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
+          onClick={() => setIsNavCollapsed(!isNavCollapsed)}
           aria-controls="navbarSupportedContent"
-          aria-expanded="false"
+          aria-expanded={!isNavCollapsed}
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div 
+          className={`collapse navbar-collapse ${!isNavCollapsed ? 'show' : ''}`} 
+          id="navbarSupportedContent"
+        >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <NavLink
@@ -146,7 +180,7 @@ const Navbar = () => {
               </ul>
             </li>
           </ul>
-          <div className="d-flex align-items-center gap-2 justify-content-between">
+          <div className="d-flex align-items-center gap-2 justify-content-between me-4">
             <form
               className="d-flex search-form"
               role="search"
