@@ -2,8 +2,14 @@ import axios from "axios";
 
 const BASE_URL = "https://newsdata.io/api/1/latest?";
 
-const API_KEY =
-  import.meta.env.VITE_API_KEY || "pub_e2390ff326904b2293b852fd29aa11d3";
+let API_KEY;
+if (import.meta.env.VITE_API_KEY) {
+  console.log("Using API key from .env");
+  API_KEY = import.meta.env.VITE_API_KEY;
+} else {
+  console.log("Using backup API key");
+  API_KEY = "pub_e2390ff326904b2293b852fd29aa11d3";
+}
 
 const fetchHeadlines = async (countrycode, nextPage = null) => {
   try {
