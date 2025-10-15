@@ -17,13 +17,30 @@ const Home = () => {
       try {
         setLoading(true);
         setError(null);
+        
+        // Check if cached country matches current country
+        const cachedCountry = localStorage.getItem('cachedCountry');
         const cachedNextPage = localStorage.getItem('nextPage');
         const cachedNewsHeadlines = localStorage.getItem('newsHeadlines');
-        if (cachedNextPage && cachedNewsHeadlines) {
+        
+        // If country changed, clear cache and fetch fresh data
+        if (cachedCountry && cachedCountry !== country) {
+          console.log(`Country changed from ${cachedCountry} to ${country}, fetching fresh data`);
+          localStorage.setItem('cachedCountry', country);
+          
+          const {results, nextPage} = await fetchHeadlines(country);
+          setNewsHeadlines(results || []);
+          setNewNextPage(nextPage);
+          localStorage.setItem('nextPage', nextPage);
+          localStorage.setItem('newsHeadlines', JSON.stringify(results));
+          console.log('Fresh headlines fetched for', country);
+        } 
+        // Use cache only if country matches
+        else if (cachedNextPage && cachedNewsHeadlines && cachedCountry === country) {
           try {
             setNewNextPage(cachedNextPage);
             setNewsHeadlines(JSON.parse(cachedNewsHeadlines));
-            console.log('Cached headlines found');
+            console.log('Using cached headlines for', country);
           } catch (error) {
             console.error("Error parsing cached headlines", error);
             const {results, nextPage} = await fetchHeadlines(country);
@@ -31,15 +48,17 @@ const Home = () => {
             setNewNextPage(nextPage);
             localStorage.setItem('nextPage', nextPage);
             localStorage.setItem('newsHeadlines', JSON.stringify(results));
-            console.log('Headlines fetched and cached');
           }
-        } else {
+        } 
+        // No cache, fetch fresh data
+        else {
           const {results, nextPage} = await fetchHeadlines(country);
           setNewsHeadlines(results || []);
           setNewNextPage(nextPage);
           localStorage.setItem('nextPage', nextPage);
           localStorage.setItem('newsHeadlines', JSON.stringify(results));
-          console.log('Headlines fetched and cached');
+          localStorage.setItem('cachedCountry', country);
+          console.log('Fresh headlines fetched and cached for', country);
         }
       } catch (error) {
         console.error("Error fetching headlines", error);
