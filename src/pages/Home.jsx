@@ -8,6 +8,7 @@ import "./Home.css";
 const Home = () => {
   const [newsHeadlines, setNewsHeadlines] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
   const { country } = useContext(CountryContext);
   const [newNextPage, setNewNextPage] = useState('');
@@ -72,7 +73,7 @@ const Home = () => {
 
   const handleLoadMore = async() => {
     try {
-      setLoading(true);
+      setLoadingMore(true);
       const {results, nextPage} = await fetchHeadlines(country, newNextPage);
       setNewsHeadlines([...newsHeadlines, ...results]);
       setNewNextPage(nextPage);
@@ -80,7 +81,7 @@ const Home = () => {
       console.error("Error fetching headlines", error);
       setError("Failed to load news. Please try again later.");
     } finally {
-      setLoading(false);
+      setLoadingMore(false);
     }
   }
 
@@ -124,15 +125,23 @@ const Home = () => {
         {!loading && !error && newsHeadlines.length > 0 && (
           <>
           <NewsCard newsHeadlines={newsHeadlines} />
-          <div className="load-more-btn d-flex justify-content-center">
-          <button
-            className="btn btn-primary"
-            onClick={handleLoadMore}
-            disabled={!newNextPage}
-          >
-            Load More
-          </button>
-          </div>
+          {loadingMore && (
+            <div className="load-more-loader">
+              <div className="loader-spinner"></div>
+              <p className="loader-message">Loading more news...</p>
+            </div>
+          )}
+          {!loadingMore && (
+            <div className="load-more-btn d-flex justify-content-center">
+              <button
+                className="btn btn-primary"
+                onClick={handleLoadMore}
+                disabled={!newNextPage}
+              >
+                Load More
+              </button>
+            </div>
+          )}
           </>
         )}
           
