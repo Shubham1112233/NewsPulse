@@ -125,7 +125,6 @@
 .dropdown-item:hover {
     background-color: var(--primary-color);
     color: white !important;
-    transform: translateX(5px);
 }
 
 .dropdown-item.active {
