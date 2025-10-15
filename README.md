@@ -48,68 +48,11 @@ npm run dev
 
 5. Open [http://localhost:5173](http://localhost:5173) in your browser
 
-## 🏗️ Build for Production
-
-\`\`\`bash
-npm run build
-\`\`\`
-
-The build will be created in the \`dist\` directory.
-
-## 📤 Deployment
-
-### Deploy to Netlify
-
-1. Install Netlify CLI:
-\`\`\`bash
-npm install -g netlify-cli
-\`\`\`
-
-2. Build and deploy:
-\`\`\`bash
-npm run build
-netlify deploy --prod
-\`\`\`
-
-### Deploy to Vercel
-
-1. Install Vercel CLI:
-\`\`\`bash
-npm install -g vercel
-\`\`\`
-
-2. Deploy:
-\`\`\`bash
-vercel
-\`\`\`
 
 ### Environment Variables for Deployment
 
 Make sure to add your \`VITE_API_KEY\` in your hosting platform's environment variables settings.
 
-## 🎯 Project Structure
-
-\`\`\`
-news-app/
-├── src/
-│   ├── components/         # Reusable components
-│   │   ├── Navbar.jsx
-│   │   ├── NewsCard.jsx
-│   │   ├── Loader.jsx
-│   │   └── CountryProvider.jsx
-│   ├── contexts/          # React contexts
-│   │   └── CountryContext.js
-│   ├── pages/             # Page components
-│   │   ├── Home.jsx
-│   │   ├── Category.jsx
-│   │   └── Search.jsx
-│   ├── utils/             # Utility functions
-│   │   └── api.js
-│   ├── App.jsx
-│   └── main.jsx
-├── public/                # Static assets
-└── index.html
-\`\`\`
 
 ## 🌟 Features in Detail
 
@@ -151,7 +94,7 @@ This project is open source and available under the MIT License.
 
 ## 📧 Contact
 
-For questions or feedback, please open an issue on GitHub.
+For questions or feedback please reach out to me on shubhekkaldevi@gmail.com, please open an issue on GitHub.
 
 ---
 
